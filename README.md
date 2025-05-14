@@ -1,2 +1,2 @@
-# crud-php-prototipo-para-refactorizar
-Prototipo de CRUD para refactorizar
+# crud-php-prototipo-refactorizado
+Prototipo de CRUD refactorizado
