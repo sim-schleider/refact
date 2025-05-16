@@ -1,46 +1,48 @@
 <?php
-require_once("./models/students.php");
+// procesa las solicitudes HTTP
 
-function handleGet($conn) {
-    if (isset($_GET['id'])) {
-        $result = getStudentById($conn, $_GET['id']);
-        echo json_encode($result->fetch_assoc());
+require_once("./models/students.php"); // importa las funciones de acceso a la base de datos
+
+function handleGet($conn) { // GET
+    if (isset($_GET['id'])) { // revisa si el id es obtenido
+        $result = getStudentById($conn, $_GET['id']); // obtiene la fila con esa id
+        echo json_encode($result->fetch_assoc()); // muestra la fila como un json - fetch_assoc() obtiene los datos y los tranforma en un array (asociativo)
     } else {
-        $result = getAllStudents($conn);
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
+        $result = getAllStudents($conn); // obtiene todos los estudiantes
+        $data = []; // crea un array vacío
+        while ($row = $result->fetch_assoc()) { // mientras la fila obtenida no sea nula
+            $data[] = $row; // obtiene las filas
         }
-        echo json_encode($data);
+        echo json_encode($data); // muestra las filas como un json
     }
 }
 
-function handlePost($conn) {
-    $input = json_decode(file_get_contents("php://input"), true);
-    if (createStudent($conn, $input['fullname'], $input['email'], $input['age'])) {
-        echo json_encode(["message" => "Estudiante agregado correctamente"]);
+function handlePost($conn) { // POST
+    $input = json_decode(file_get_contents("php://input"), true); // obtiene la solicitud y la convierte en un array
+    if (createStudent($conn, $input['fullname'], $input['email'], $input['age'])) { // crea un estudiante con los datos ingresados - (*) podrían validarse
+        echo json_encode(["message" => "Estudiante agregado correctamente"]); // (?) muestra un mensaje
     } else {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo agregar"]);
+        http_response_code(500); // marca un error
+        echo json_encode(["error" => "No se pudo agregar"]); 
     }
 }
 
-function handlePut($conn) {
-    $input = json_decode(file_get_contents("php://input"), true);
-    if (updateStudent($conn, $input['id'], $input['fullname'], $input['email'], $input['age'])) {
-        echo json_encode(["message" => "Actualizado correctamente"]);
+function handlePut($conn) { // PUT
+    $input = json_decode(file_get_contents("php://input"), true); 
+    if (updateStudent($conn, $input['id'], $input['fullname'], $input['email'], $input['age'])) { // actualiza un estudiante con los datos ingresados
+        echo json_encode(["message" => "Actualizado correctamente"]); 
     } else {
-        http_response_code(500);
+        http_response_code(500); 
         echo json_encode(["error" => "No se pudo actualizar"]);
     }
 }
 
-function handleDelete($conn) {
-    $input = json_decode(file_get_contents("php://input"), true);
-    if (deleteStudent($conn, $input['id'])) {
-        echo json_encode(["message" => "Eliminado correctamente"]);
+function handleDelete($conn) { // DELETE
+    $input = json_decode(file_get_contents("php://input"), true); 
+    if (deleteStudent($conn, $input['id'])) { // elimina el estudiante seleccionado
+        echo json_encode(["message" => "Eliminado correctamente"]); 
     } else {
-        http_response_code(500);
+        http_response_code(500); 
         echo json_encode(["error" => "No se pudo eliminar"]);
     }
 }
