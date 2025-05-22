@@ -1,54 +1,20 @@
-<!-- frontend/index.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestión de Estudiantes</title>
+  <title>Gestión General</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div class="fcontainer">
-    <h2>Gestión de Estudiantes</h2>
 
-    <form id="studentForm">
-      <input type="hidden" id="studentId"/>
+<main class="fcontainer">
+    <h1 class="right">Gestión General</h1>
+    <div></div> <!-- (x) -->
+    <a href="html/studentsSubjects.html">Asignación de Materias a Estudiantes</a> 
+    <a href="html/students.html">Gestión de Estudiantes</a> 
+    <a href="html/subjects.html">Gestión de Materias</a> 
+  </main>
 
-      <div class="in">
-        <div>
-          <label>Nombre completo</label>
-          <input type="text" id="fullname" required/>
-        </div>
-        <div>
-          <label>Email</label>
-          <input type="email" id="email" required/>
-        </div>
-        <div>
-          <label>Edad</label>
-          <input type="number" id="age" required/>
-        </div>
-      </div>
-
-      <div class="out">
-        <button type="submit">Guardar</button><button type="reset" onclick="document.getElementById('studentId').value = ''">Cancelar</button>
-      </div>
-    </form>
-  </div>
-
-  <div class="tcontainer">
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Edad</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="studentTableBody"></tbody>
-    </table>
-  </div>
-
-  <script src="js/frontDispatcher.js"></script>
 </body>
 </html>

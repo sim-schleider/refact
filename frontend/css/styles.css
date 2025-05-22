@@ -23,7 +23,7 @@ body {
 }
 
 /* Título */
-h2 {
+h1, h2 {
     margin: 0;
     padding: 0 1rem;
 
@@ -38,6 +38,11 @@ h2 {
     grid-column: 1 / 2;
 
     border-radius: var(--rad) var(--rad) 0 0;
+}
+
+.right {
+    text-align: right;
+    grid-column: 2 / 4;
 }
 
 /* Formulario */
@@ -76,13 +81,14 @@ form .in > div:focus-within label {
     text-decoration: underline solid var(--c1);
 }
 
-form .in input {
+form .in input, form .in select {
     width: 100%;
     box-sizing: border-box;
 
     border: none;
     padding: .5rem;
 
+    margin: 0;
     margin-top: .5rem;
     background-color: #fff;
 
@@ -91,10 +97,35 @@ form .in input {
     color: var(--c3);
 }
 
-form .in input:focus {
+form .in input:focus, form .in select:focus  {
     color: var(--c1);
     background-color: var(--c3);
     outline: none;
+}
+
+form .in input[type=checkbox] {
+    appearance: none;
+    display: block;
+    
+    height: 2rem;
+    width: 2rem;
+}
+
+form .in input[type=checkbox]:focus {
+    background-color: #fff;
+}
+
+form .in input[type=checkbox]:checked {
+    background-color: var(--c3);
+}
+
+form .in option {
+    color: var(--c3);
+    background-color: #fff;
+}
+
+form .in option:first-child {
+    color: var(--c2);
 }
 
 /* Tabla */
@@ -141,17 +172,14 @@ td:last-child button {
 }
 
 /* Botones */
-button {
+button, a {
     margin: 0;
-    padding: 0;
     border: none;
 
     color: var(--c1);
     font-size: inherit;
     font-family: inherit;
 
-    width: 50%;
-    height: 100%;
     
     background-color: var(--c3);
     cursor: pointer;
@@ -161,16 +189,62 @@ button {
     transition: .3s;
 }
 
-button:hover {
+button {
+    padding: 0;
+    width: 50%;
+    height: 100%;
+}
+
+a {
+    padding: .5rem;
+    grid-row-start: 3;
+    line-height: 1.5rem;
+
+    text-decoration: none;
+    text-align: center;
+}
+
+button:hover, a:hover {
     outline: none;
     background-image: radial-gradient(circle at center, var(--c2) 1px, transparent 0);
     background-size: 3px 3px;
     background-repeat: round; 
 }
 
-button:focus {
+button:focus, a:focus {
     outline: none;
     text-decoration: solid underline 1px;
+}
+
+main div { /* (x) */
+    grid-row-start: 2;
+    grid-column: 1 / 4;
+
+    height: 8rem;
+    width: 90%;
+    margin: 2rem auto;
+
+    background-color: var(--c1);
+}
+
+/* Footer */
+footer a {
+    display: block;
+    box-sizing: border-box;
+    margin: 0 auto;
+    
+    margin-top: 1.5rem;
+    width: 50%;
+
+    color: var(--c3);
+    background-color: var(--c1);
+    background-image: none;
+}
+
+footer a:hover {
+    color: var(--c1);
+    background-color: var(--c2);
+    background-image: none;
 }
 
 /* Portrait */
@@ -206,5 +280,9 @@ button:focus {
 
     button:hover, button:focus {
         background-image: none;
+    }
+
+    footer a {
+        width: 100%;
     }
 }

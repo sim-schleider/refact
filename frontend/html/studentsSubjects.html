@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inscripción de Estudiantes a Materias</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script type="module" src="../js/controllers/studentsSubjectsController.js"></script>
+</head>
+
+<body>
+
+  <div class="fcontainer">
+      <h2>Asignación de Materias</h2>
+
+      <form id="studentForm">
+        <input type="hidden" id="studentId"/>
+
+        <div class="in">
+          <div>
+            <label>Estudiante</label>
+            <select id="studentIdSelect" required>
+              <option value="" disabled selected>Seleccionar estudiante</option>
+            </select>
+          </div>
+          <div>
+            <label>Materia</label>
+            <select id="subjectIdSelect" required>
+              <option value="" disabled selected>Seleccionar materia</option>
+            </select>
+          </div>
+          <div>
+            <label>Aprobado</label>
+            <input type="checkbox" id="passed"/>
+          </div>
+        </div>
+
+        <div class="out">
+          <button type="submit">Guardar</button><button type="reset" onclick="document.getElementById('relationId').value = ''">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="tcontainer">
+      <table>
+        <thead>
+          <tr>
+            <th>Estudiante</th>
+            <th>Materia</th>
+            <th>Aprobado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="relationTableBody"></tbody>
+      </table>
+    </div>
+
+    <footer>
+      <a href="../index.html">Volver al Panel Principal</a>
+    </footer>
+  
+</body>
+</html>
