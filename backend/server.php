@@ -10,10 +10,38 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"); // indi
 header("Access-Control-Allow-Headers: Content-Type"); // permite al navegador enviar encabezados (?) (JSON) 
 // esto permite al fetch() funcionar correctamente
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
+function sendCodeMessage($code, $message = "") {
+    http_response_code($code);
+    echo json_encode(["message" => $message]);
     exit();
 }
 
-require_once("./routes/studentsRoutes.php"); // incluye el archivo (una vez) que define las rutas - el archivo analiza la URL, el método y decide qué controlador (?) invocar - (*) debería validarse
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    sendCodeMessage(200);
+}
+
+// Obtener el módulo desde la query string
+$uri = parse_url($_SERVER['REQUEST_URI']);
+$query = $uri['query'] ?? '';
+parse_str($query, $query_array);
+$module = $query_array['module'] ?? null;
+
+// Validación de existencia del módulo
+if (!$module) {
+    sendCodeMessage(400, "Módulo no especificado");
+}
+
+// Validación de caracteres seguros: solo letras, números y guiones bajos
+if (!preg_match('/^\w+$/', $module)) {
+    sendCodeMessage(400, "Nombre de módulo inválido");
+}
+
+// Buscar el archivo de ruta correspondiente
+$routeFile = __DIR__ . "/routes/{$module}Routes.php";
+
+if (file_exists($routeFile)) {
+    require_once($routeFile); // incluye el archivo (una vez) que define las rutas - el archivo analiza la URL, el método y decide qué controlador (?) invocar
+} else {
+    sendCodeMessage(404, "Ruta para el módulo '{$module}' no encontrada");
+}
 ?>
