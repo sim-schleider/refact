@@ -104,7 +104,7 @@ async function loadRelations()
          * ¡aunque conceptualmente sea falso! por eso: 
          * Se necesita convertir ese string "0" a un número real 
          * o asegurarte de comparar el valor exactamente. 
-         * Con el siguiente código se convierten todos los string passed a enteros.
+         * Con el siguiente código se convierten todos los string 'passed' a enteros.
          */
         relations.forEach(rel => 
         {

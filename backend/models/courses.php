@@ -1,38 +1,38 @@
 <?php
-function getAllSubjects($conn) 
+function getAllCourses($conn) 
 {
-    $sql = "SELECT * FROM subjects";
+    $sql = "SELECT * FROM courses";
     return $conn->query($sql);
 }
 
-function getSubjectById($conn, $id) 
+function getCourseById($conn, $id) 
 {
-    $sql = "SELECT * FROM subjects WHERE id = ?";
+    $sql = "SELECT * FROM courses WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
     return $stmt->get_result();
 }
 
-function createSubject($conn, $name) 
+function createCourse($conn, $name) 
 {
-    $sql = "INSERT INTO subjects (name) VALUES (?)";
+    $sql = "INSERT INTO courses (name) VALUES (?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $name);
     return $stmt->execute();
 }
 
-function updateSubject($conn, $id, $name) 
+function updateCourse($conn, $id, $name) 
 {
-    $sql = "UPDATE subjects SET name = ? WHERE id = ?";
+    $sql = "UPDATE courses SET name = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("si", $name, $id);
     return $stmt->execute();
 }
 
-function deleteSubject($conn, $id) 
+function deleteCourse($conn, $id) 
 {
-    $sql = "DELETE FROM subjects WHERE id = ?";
+    $sql = "DELETE FROM courses WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     return $stmt->execute();

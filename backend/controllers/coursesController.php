@@ -1,16 +1,16 @@
 <?php
-require_once("./models/subjects.php");
+require_once("./models/courses.php");
 
 function handleGet($conn) 
 {
     if (isset($_GET['id'])) 
     {
-        $result = getSubjectById($conn, $_GET['id']);
+        $result = getCourseById($conn, $_GET['id']);
         echo json_encode($result->fetch_assoc());
     } 
     else 
     {
-        $result = getAllSubjects($conn);
+        $result = getAllCourses($conn);
         $data = [];
         while ($row = $result->fetch_assoc()) 
         {
@@ -23,7 +23,7 @@ function handleGet($conn)
 function handlePost($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (createSubject($conn, $input['name'])) 
+    if (createCourse($conn, $input['name'])) 
     {
         echo json_encode(["message" => "Materia creada correctamente"]);
     } 
@@ -37,7 +37,7 @@ function handlePost($conn)
 function handlePut($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (updateSubject($conn, $input['id'], $input['name'])) 
+    if (updateCourse($conn, $input['id'], $input['name'])) 
     {
         echo json_encode(["message" => "Materia actualizada correctamente"]);
     } 
@@ -51,7 +51,7 @@ function handlePut($conn)
 function handleDelete($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-    if (deleteSubject($conn, $input['id'])) 
+    if (deleteCourse($conn, $input['id'])) 
     {
         echo json_encode(["message" => "Materia eliminada correctamente"]);
     } 

@@ -117,6 +117,8 @@ form .in input[type=checkbox]:focus {
 
 form .in input[type=checkbox]:checked {
     background-color: var(--c3);
+    outline: 5px solid #fff;
+    outline-offset: -5px;
 }
 
 form .in option {
@@ -224,7 +226,7 @@ main div { /* (x) */
     width: 90%;
     margin: 2rem auto;
 
-    background-color: var(--c1);
+    background-color: #fff;
 }
 
 /* Footer */

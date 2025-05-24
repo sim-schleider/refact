@@ -1,37 +1,37 @@
-import { subjectsAPI } from '../api/subjectsAPI.js';
+import { coursesAPI } from '../api/coursesAPI.js';
 
 document.addEventListener('DOMContentLoaded', () => 
 {
-    loadSubjects();
-    setupSubjectFormHandler();
+    loadCourses();
+    setupCourseFormHandler();
 });
 
-function setupSubjectFormHandler() 
+function setupCourseFormHandler() 
 {
-  const form = document.getElementById('subjectForm');
+  const form = document.getElementById('courseForm');
   form.addEventListener('submit', async e => 
   {
         e.preventDefault();
-        const subject = 
+        const course = 
         {
-            id: document.getElementById('subjectId').value.trim(),
+            id: document.getElementById('courseId').value.trim(),
             name: document.getElementById('name').value.trim()
         };
 
         try 
         {
-            if (subject.id) 
+            if (course.id) 
             {
-                await subjectsAPI.update(subject);
+                await coursesAPI.update(course);
             }
             else
             {
-                await subjectsAPI.create(subject);
+                await coursesAPI.create(course);
             }
             
             form.reset();
-            document.getElementById('subjectId').value = '';
-            loadSubjects();
+            document.getElementById('courseId').value = '';
+            loadCourses();
         }
         catch (err)
         {
@@ -40,12 +40,12 @@ function setupSubjectFormHandler()
   });
 }
 
-async function loadSubjects()
+async function loadCourses()
 {
     try
     {
-        const subjects = await subjectsAPI.fetchAll();
-        renderSubjectTable(subjects);
+        const courses = await coursesAPI.fetchAll();
+        renderCourseTable(courses);
     }
     catch (err)
     {
@@ -53,17 +53,17 @@ async function loadSubjects()
     }
 }
 
-function renderSubjectTable(subjects)
+function renderCourseTable(courses)
 {
-    const tbody = document.getElementById('subjectTableBody');
+    const tbody = document.getElementById('courseTableBody');
     tbody.replaceChildren();
 
-    subjects.forEach(subject =>
+    courses.forEach(course =>
     {
         const tr = document.createElement('tr');
 
-        tr.appendChild(createCell(subject.name));
-        tr.appendChild(createSubjectActionsCell(subject));
+        tr.appendChild(createCell(course.name));
+        tr.appendChild(createCourseActionsCell(course));
 
         tbody.appendChild(tr);
     });
@@ -76,7 +76,7 @@ function createCell(text)
     return td;
 }
 
-function createSubjectActionsCell(subject)
+function createCourseActionsCell(course)
 {
     const td = document.createElement('td');
 
@@ -85,28 +85,28 @@ function createSubjectActionsCell(subject)
     editBtn.className = 'w3-button w3-blue w3-small';
     editBtn.addEventListener('click', () => 
     {
-        document.getElementById('subjectId').value = subject.id;
-        document.getElementById('name').value = subject.name;
+        document.getElementById('courseId').value = course.id;
+        document.getElementById('name').value = course.name;
     });
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Borrar';
     deleteBtn.className = 'w3-button w3-red w3-small w3-margin-left';
-    deleteBtn.addEventListener('click', () => confirmDeleteSubject(subject.id));
+    deleteBtn.addEventListener('click', () => confirmDeleteCourse(course.id));
 
     td.appendChild(editBtn);
     td.appendChild(deleteBtn);
     return td;
 }
 
-async function confirmDeleteSubject(id)
+async function confirmDeleteCourse(id)
 {
     if (!confirm('¿Seguro que deseas borrar esta materia?')) return;
 
     try
     {
-        await subjectsAPI.remove(id);
-        loadSubjects();
+        await coursesAPI.remove(id);
+        loadCourses();
     }
     catch (err)
     {

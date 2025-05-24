@@ -5,14 +5,14 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Gestión de Materias</title>
       <link rel="stylesheet" href="../css/styles.css" />
-      <script type="module" src="../js/controllers/subjectsController.js"></script>
+      <script type="module" src="../js/controllers/coursesController.js"></script>
   </head>
   <body>
     <div class="fcontainer">
       <h2>Gestión de Materias</h2>
 
-      <form id="subjectForm">
-        <input type="hidden" id="subjectId"/>
+      <form id="courseForm">
+        <input type="hidden" id="courseId"/>
 
         <div class="in">
           <div>
@@ -22,7 +22,7 @@
         </div>
 
         <div class="out">
-          <button type="submit">Guardar</button><button type="reset" onclick="document.getElementById('subjectId').value = ''">Cancelar</button>
+          <button type="submit">Guardar</button><button type="reset" onclick="document.getElementById('courseId').value = ''">Cancelar</button>
         </div>
       </form>
     </div>
@@ -35,7 +35,7 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody id="subjectTableBody"></tbody>
+        <tbody id="courseTableBody"></tbody>
       </table>
     </div>
 
