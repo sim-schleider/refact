@@ -1,5 +1,5 @@
 <?php
-// accede a la base de datos
+// accede a la base de datos - tabla estudiantes
 
 function getAllStudents($conn) { // obtiene todos los estudiantes
     $sql = "SELECT * FROM students"; // guarda en '$sql' una consulta SQL

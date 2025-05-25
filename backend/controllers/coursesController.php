@@ -1,62 +1,47 @@
 <?php
+// procesa las solicitudes HTTP - materias
+
 require_once("./models/courses.php");
 
-function handleGet($conn) 
-{
-    if (isset($_GET['id'])) 
-    {
+function handleGet($conn) { // GET
+    if (isset($_GET['id'])) {
         $result = getCourseById($conn, $_GET['id']);
         echo json_encode($result->fetch_assoc());
-    } 
-    else 
-    {
+    } else {
         $result = getAllCourses($conn);
         $data = [];
-        while ($row = $result->fetch_assoc()) 
-        {
+        while ($row = $result->fetch_assoc()) {
             $data[] = $row;
         }
         echo json_encode($data);
     }
 }
 
-function handlePost($conn) 
-{
+function handlePost($conn) { // POST
     $input = json_decode(file_get_contents("php://input"), true);
-    if (createCourse($conn, $input['name'])) 
-    {
+    if (createCourse($conn, $input['name'])) {
         echo json_encode(["message" => "Materia creada correctamente"]);
-    } 
-    else 
-    {
+    } else {
         http_response_code(500);
         echo json_encode(["error" => "No se pudo crear"]);
     }
 }
 
-function handlePut($conn) 
-{
+function handlePut($conn) { // PUT
     $input = json_decode(file_get_contents("php://input"), true);
-    if (updateCourse($conn, $input['id'], $input['name'])) 
-    {
+    if (updateCourse($conn, $input['id'], $input['name'])) {
         echo json_encode(["message" => "Materia actualizada correctamente"]);
-    } 
-    else 
-    {
+    } else {
         http_response_code(500);
         echo json_encode(["error" => "No se pudo actualizar"]);
     }
 }
 
-function handleDelete($conn) 
-{
+function handleDelete($conn) { // DELETE
     $input = json_decode(file_get_contents("php://input"), true);
-    if (deleteCourse($conn, $input['id'])) 
-    {
+    if (deleteCourse($conn, $input['id'])) {
         echo json_encode(["message" => "Materia eliminada correctamente"]);
-    } 
-    else 
-    {
+    } else {
         http_response_code(500);
         echo json_encode(["error" => "No se pudo eliminar"]);
     }

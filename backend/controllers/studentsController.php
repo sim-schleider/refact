@@ -1,9 +1,9 @@
 <?php
-// procesa las solicitudes HTTP
+// procesa las solicitudes HTTP - estudiantes
 
 require_once("./models/students.php"); // importa las funciones de acceso a la base de datos
 
-function handleGet($conn) { // GET
+function handleGet($conn) { // GET - obtiene valores
     if (isset($_GET['id'])) { // revisa si el id es obtenido
         $result = getStudentById($conn, $_GET['id']); // obtiene la fila con esa id
         echo json_encode($result->fetch_assoc()); // muestra la fila como un json - fetch_assoc() obtiene los datos y los tranforma en un array (asociativo)
@@ -17,7 +17,7 @@ function handleGet($conn) { // GET
     }
 }
 
-function handlePost($conn) { // POST
+function handlePost($conn) { // POST - crea valores
     $input = json_decode(file_get_contents("php://input"), true); // obtiene la solicitud y la convierte en un array
     if (createStudent($conn, $input['fullname'], $input['email'], $input['age'])) { // crea un estudiante con los datos ingresados - (*) podrían validarse
         echo json_encode(["message" => "Estudiante agregado correctamente"]); // (?) muestra un mensaje
@@ -27,7 +27,7 @@ function handlePost($conn) { // POST
     }
 }
 
-function handlePut($conn) { // PUT
+function handlePut($conn) { // PUT - actualiza valores
     $input = json_decode(file_get_contents("php://input"), true); 
     if (updateStudent($conn, $input['id'], $input['fullname'], $input['email'], $input['age'])) { // actualiza un estudiante con los datos ingresados
         echo json_encode(["message" => "Actualizado correctamente"]); 
@@ -37,7 +37,7 @@ function handlePut($conn) { // PUT
     }
 }
 
-function handleDelete($conn) { // DELETE
+function handleDelete($conn) { // DELETE - elimina valores
     $input = json_decode(file_get_contents("php://input"), true); 
     if (deleteStudent($conn, $input['id'])) { // elimina el estudiante seleccionado
         echo json_encode(["message" => "Eliminado correctamente"]); 
