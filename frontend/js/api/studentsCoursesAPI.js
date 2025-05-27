@@ -1,34 +1,13 @@
-import { createAPI } from './apiFactory.js';
-export const studentsCoursesAPI = createAPI('studentsCourses');
+import { createAPI } from './apiFactory.js'; // importa el generador de APIs
+export const studentsCoursesAPI = createAPI('studentsCourses'); // crea la API de estudiantes-materias
 
-/**
- * Ejemplo de extensión de la API:
+// la api puede extenderse, por ejemplo, agregando un nuevo método
+// esto puede lograrse utilizando los siguientes fragmentos
 
-import { createAPI } from './apiFactory.js';
+// ...studentsCoursesAPI - hereda las funciones ya existentes
+// async fetchByStudentId(id) - crea un método personalizado para obtener un estudiante a trvés de una id
+// const res = await fetch(`../../backend/server.php?module=studentsCourses&studentId=${id}`); - hace la nueva consulta
 
-const baseAPI = createAPI('studentsCourses');
+// además, mediante la propiedad 'urlOverride' dentro del 'config' anónimo definido dentro del generador, puede personalizarse la URL como sea necesario
 
-export const studentsCoursesAPI = 
-{
-    ...baseAPI, // hereda fetchAll, create, update, remove
-
-    // método adicional personalizado
-    async fetchByStudentId(id) 
-    {
-        const res = await fetch(`../../backend/server.php?module=studentsCourses&studentId=${id}`);
-        if (!res.ok) throw new Error("No se pudieron obtener asignaciones del estudiante");
-        return await res.json();
-    }
-};
-
-*/
-
-/**
- * También permite url personalizadas ahora:
-
-const customAPI = createAPI('custom', 
-{
-    urlOverride: '../../backend/misRutas/personalizadas.php'
-});
-
- */
+// const customAPI = createAPI('custom', {urlOverride: '../../backend/misRutas/personalizadas.php'});

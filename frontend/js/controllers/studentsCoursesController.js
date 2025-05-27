@@ -1,79 +1,63 @@
+// controla el estado y aspecto de la página - módulo estudiantes-materias
+
+// importa todas las APIs
 import { studentsAPI } from '../api/studentsAPI.js';
 import { coursesAPI } from '../api/coursesAPI.js';
 import { studentsCoursesAPI } from '../api/studentsCoursesAPI.js';
 
 
-document.addEventListener('DOMContentLoaded', () => 
-{
+document.addEventListener('DOMContentLoaded', () => {
     initSelects();
     setupFormHandler();
     loadRelations();
 });
 
-async function initSelects() 
-{
-    try 
-    {
-        // Cargar estudiantes
+async function initSelects() {
+    try {
         const students = await studentsAPI.fetchAll();
-        const studentSelect = document.getElementById('studentIdSelect');
-        students.forEach(s => 
-        {
-            const option = document.createElement('option');
-            option.value = s.id;
-            option.textContent = s.fullname;
-            studentSelect.appendChild(option);
+        const studentSelect = document.getElementById('studentIdSelect'); // obtiene el 'select' de estudiantes del formulario
+        students.forEach(s => { // por cada estudiante (obtenido a través de la API)
+            const option = document.createElement('option'); // crea una opción
+            option.value = s.id; // ingresa la id (oculta)
+            option.textContent = s.fullname; // ingresa el nombre
+            studentSelect.appendChild(option); // agrega las opciones al select
         });
 
-        // Cargar materias
         const courses = await coursesAPI.fetchAll();
-        const courseSelect = document.getElementById('courseIdSelect');
-        courses.forEach(sub => 
-        {
+        const courseSelect = document.getElementById('courseIdSelect'); // obtiene el 'select' de materias del formulario
+        courses.forEach(sub => {
             const option = document.createElement('option');
             option.value = sub.id;
             option.textContent = sub.name;
             courseSelect.appendChild(option);
         });
-    } 
-    catch (err) 
-    {
+    } catch (err) {
         console.error('Error cargando estudiantes o materias:', err.message);
     }
 }
 
-function setupFormHandler() 
-{
+function setupFormHandler() {
     const form = document.getElementById('relationForm');
-    form.addEventListener('submit', async e => 
-    {
+    form.addEventListener('submit', async e => {
         e.preventDefault();
-
         const relation = getFormData();
 
-        try 
-        {
-            if (relation.id) 
-            {
+        try {
+            if (relation.id) {
                 await studentsCoursesAPI.update(relation);
-            } 
-            else 
-            {
+            } else {
                 await studentsCoursesAPI.create(relation);
             }
             clearForm();
             loadRelations();
-        } 
-        catch (err) 
-        {
+        } catch (err) {
             console.error('Error guardando relación:', err.message);
         }
     });
 }
 
-function getFormData() 
-{
-    return{
+function getFormData() {
+    return {
         id: document.getElementById('relationId').value.trim(),
         student_id: document.getElementById('studentIdSelect').value,
         course_id: document.getElementById('courseIdSelect').value,
@@ -81,83 +65,56 @@ function getFormData()
     };
 }
 
-function clearForm() 
-{
+function clearForm() {
     document.getElementById('relationForm').reset();
     document.getElementById('relationId').value = '';
 }
 
-async function loadRelations() 
-{
-    try 
-    {
-        const relations = await studentsCoursesAPI.fetchAll();
-        
-        /**
-         * DEBUG
-         */
-        //console.log(relations);
+async function loadRelations() {
+    try {
+        const relations = await studentsCoursesAPI.fetchAll(); // obtiene todas las relaciones - esto se encarga de relacionar las dos tablas correctamente en el backend
 
-        /**
-         * En JavaScript: Cualquier string que no esté vacío ("") es considerado truthy.
-         * Entonces "0" (que es el valor que llega desde el backend) es truthy,
-         * ¡aunque conceptualmente sea falso! por eso: 
-         * Se necesita convertir ese string "0" a un número real 
-         * o asegurarte de comparar el valor exactamente. 
-         * Con el siguiente código se convierten todos los string 'passed' a enteros.
-         */
-        relations.forEach(rel => 
-        {
-            rel.passed = Number(rel.passed);
+        relations.forEach(rel => {
+            rel.passed = Number(rel.passed); // convierte la condición de aprobación a un número - esto es necesario para que el string '0' sea considerado falso
         });
         
         renderRelationsTable(relations);
-    } 
-    catch (err) 
-    {
+    } catch (err) {
         console.error('Error cargando inscripciones:', err.message);
     }
 }
 
-function renderRelationsTable(relations) 
-{
+function renderRelationsTable(relations) {
     const tbody = document.getElementById('relationTableBody');
     tbody.replaceChildren();
 
-    relations.forEach(rel => 
-    {
+    relations.forEach(rel => {
         const tr = document.createElement('tr');
 
-        // tr.appendChild(createCell(rel.fullname || rel.student_id));old
         tr.appendChild(createCell(rel.student_fullname));
-        // tr.appendChild(createCell(rel.name || rel.course_id));old
         tr.appendChild(createCell(rel.course_name));
-        tr.appendChild(createCell(rel.passed ? 'Sí' : 'No'));
+        tr.appendChild(createCell(rel.passed ? 'Sí' : 'No')); // esto funciona gracias a haber convertido la condición a un número
         tr.appendChild(createActionsCell(rel));
 
         tbody.appendChild(tr);
     });
 }
 
-function createCell(text) 
-{
+function createCell(text) {
     const td = document.createElement('td');
     td.textContent = text;
     return td;
 }
 
-function createActionsCell(relation) 
-{
+function createActionsCell(relation) {
     const td = document.createElement('td');
 
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Editar';
-    editBtn.className = 'w3-button w3-blue w3-small';
     editBtn.addEventListener('click', () => fillForm(relation));
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Borrar';
-    deleteBtn.className = 'w3-button w3-red w3-small w3-margin-left';
     deleteBtn.addEventListener('click', () => confirmDelete(relation.id));
 
     td.appendChild(editBtn);
@@ -165,25 +122,20 @@ function createActionsCell(relation)
     return td;
 }
 
-function fillForm(relation) 
-{
+function fillForm(relation) {
     document.getElementById('relationId').value = relation.id;
     document.getElementById('studentIdSelect').value = relation.student_id;
     document.getElementById('courseIdSelect').value = relation.course_id;
     document.getElementById('passed').checked = !!relation.passed;
 }
 
-async function confirmDelete(id) 
-{
+async function confirmDelete(id) {
     if (!confirm('¿Estás seguro que deseas borrar esta inscripción?')) return;
 
-    try 
-    {
+    try {
         await studentsCoursesAPI.remove(id);
         loadRelations();
-    } 
-    catch (err) 
-    {
+    } catch (err) {
         console.error('Error al borrar inscripción:', err.message);
     }
 }
