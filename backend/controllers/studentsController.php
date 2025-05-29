@@ -39,11 +39,13 @@ function handlePut($conn) { // PUT - actualiza valores
 
 function handleDelete($conn) { // DELETE - elimina valores
     $input = json_decode(file_get_contents("php://input"), true); 
-    if (deleteStudent($conn, $input['id'])) { // elimina el estudiante seleccionado
+    try {
+        deleteStudent($conn, $input['id']);
         echo json_encode(["message" => "Eliminado correctamente"]); 
-    } else {
-        http_response_code(500); 
-        echo json_encode(["error" => "No se pudo eliminar"]);
+    } catch (exception $e) { // detecta errores enviados por el sistema de base de datos
+        http_response_code(409); // error 409 - error con el estado actual del recurso
+        echo json_encode([  "error" => "No se pudo eliminar",
+                            "errno" => $e->getCode() ]); // obtiene el código del error de MySQL
     }
 }
 ?>

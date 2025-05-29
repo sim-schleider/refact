@@ -10,8 +10,22 @@ export function createAPI(moduleName, config = {}) { // exporta una función - '
             body: JSON.stringify(data) // indica los datos a ser enviados
         });
 
-        if (!res.ok) throw new Error(`Error en ${method}`); // si el 'fetch' no fue exitoso, lanza un error - si el error no es recibido con 'catch', el programa termina
-        return await res.json(); // de lo contrario, devuelve lo obtenido - lo que se recibe es un objeto parseado a JavaScript, no JSON puro
+        const resobj =  await res.json(); // obtiene un JSON con la respuesta - (?) hay algún problema con hacerlo antes
+
+        if (!res.ok) { // si ocurrió un error (res.ok == false)
+            switch (resobj.errno) { // (*) solo trata el caso en DELETE
+                case 1451: // caso 1451 - violación de restricción de clave foránea
+                    switch (moduleName) { // (*) dependiendo de si la petición fue por estudiante o por materia
+                        case "students": 
+                            throw new Error("El estudiante no puede ser eliminado porque está inscrito en una materia");
+                        case "courses":
+                            throw new Error("La materia no puede ser eliminada porque tiene estudiantes inscritos");
+                    }
+                default:
+                    throw new Error(`Error en ${method}`); // si el 'fetch' no fue exitoso, lanza un error - el error debe ser recibido con 'catch'
+            }
+        }     
+        return resobj;
     }
 
     return { // devolución de la API

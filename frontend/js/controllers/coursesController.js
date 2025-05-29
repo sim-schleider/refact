@@ -44,6 +44,7 @@ async function loadCourses() {
 function renderCourseTable(courses) {
     const tbody = document.getElementById('courseTableBody');
     tbody.replaceChildren();
+    emptyAlert();
 
     courses.forEach(course => {
         const tr = document.createElement('tr');
@@ -87,6 +88,19 @@ async function confirmDeleteCourse(id) {
         await coursesAPI.remove(id);
         loadCourses();
     } catch (err) {
-        console.error('Error al borrar materia:', err.message);
+        console.error('Error al borrar materia: ', err.message);
+        addAlert(err.message);
     }
+}
+
+function addAlert(alrt) {
+    const alertbox = document.getElementById('alertbox');
+    const alert = document.createElement('p');
+    alert.textContent = alrt;
+    alertbox.appendChild(alert);
+}
+
+function emptyAlert() {
+    const alertbox = document.getElementById('alertbox');
+    alertbox.replaceChildren();
 }

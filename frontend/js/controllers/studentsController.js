@@ -54,6 +54,7 @@ async function loadStudents() {
 function renderStudentTable(students) { // genera la tabla
     const tbody = document.getElementById('studentTableBody'); // obtiene el cuerpo de la tabla
     tbody.replaceChildren(); // vacía la tabla
+    emptyAlert();
   
     students.forEach(student => { // ejecuta una función anónima por cada elemento (student) del array students
         const tr = document.createElement('tr'); // crea una fila
@@ -107,7 +108,19 @@ async function confirmDelete(id) { // confirma la eliminación de fila
         await studentsAPI.remove(id); // invoca el método DELETE interno de la API
         loadStudents(); // recarga la tabla
     } catch (err) {
-        console.error('Error al borrar:', err.message);
+        console.error('Error al borrar estudiante: ', err.message);
+        addAlert(err.message);
     }
 }
   
+function addAlert(alrt) {
+    const alertbox = document.getElementById('alertbox');
+    const alert = document.createElement('p');
+    alert.textContent = alrt;
+    alertbox.appendChild(alert);
+}
+
+function emptyAlert() {
+    const alertbox = document.getElementById('alertbox');
+    alertbox.replaceChildren();
+}

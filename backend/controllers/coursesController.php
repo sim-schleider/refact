@@ -39,11 +39,13 @@ function handlePut($conn) { // PUT
 
 function handleDelete($conn) { // DELETE
     $input = json_decode(file_get_contents("php://input"), true);
-    if (deleteCourse($conn, $input['id'])) {
-        echo json_encode(["message" => "Materia eliminada correctamente"]);
-    } else {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo eliminar"]);
+    try {
+        deleteCourse($conn, $input['id']);
+        echo json_encode(["message" => "Eliminado correctamente"]); 
+    } catch (exception $e) {
+        http_response_code(409);
+        echo json_encode([  "error" => "No se pudo eliminar",
+                            "errno" => $e->getCode() ]);
     }
 }
 ?>
