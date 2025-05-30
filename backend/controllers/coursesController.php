@@ -16,23 +16,35 @@ function handleGet($conn) { // GET
 
 function handlePost($conn) { // POST
     $input = json_decode(file_get_contents("php://input"), true);
-    $result = createCourse($conn, $input['name']);
-    if ($result['inserted'] > 0) {
-        echo json_encode(["message" => "Materia creada correctamente"]);
-    } else {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo crear"]);
+    try {
+        $result = createCourse($conn, $input['name']);
+        if ($result['inserted'] > 0) {
+            echo json_encode(["message" => "Materia creada correctamente"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo crear"]);
+        }
+    } catch (exception $e) {
+        http_response_code(409);
+        echo json_encode([  "error" => "No se pudo crear",
+                            "errno" => $e->getCode() ]);
     }
 }
 
 function handlePut($conn) { // PUT
     $input = json_decode(file_get_contents("php://input"), true);
-    $result = updateCourse($conn, $input['id'], $input['name']);
-    if ($result['updated'] > 0) {
-        echo json_encode(["message" => "Materia actualizada correctamente"]);
-    } else {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo actualizar"]);
+    try {
+        $result = updateCourse($conn, $input['id'], $input['name']);
+        if ($result['updated'] > 0) {
+            echo json_encode(["message" => "Materia actualizada correctamente"]);
+        } else { // (!) si la información al actualizar se mantiene igual, se envía como error
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo actualizar"]);
+        }
+    } catch (exception $e) {
+        http_response_code(409);
+        echo json_encode([  "error" => "No se pudo actualizar",
+                            "errno" => $e->getCode() ]);
     }
 }
 

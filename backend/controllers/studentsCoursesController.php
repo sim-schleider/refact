@@ -10,12 +10,18 @@ function handleGet($conn) { // GET
 
 function handlePost($conn) { // POST
     $input = json_decode(file_get_contents("php://input"), true);
-    $result = assignCourseToStudent($conn, $input['student_id'], $input['course_id'], $input['passed']);
-    if ($result['inserted'] > 0) {
-        echo json_encode(["message" => "Asignación realizada"]);
-    } else {
-        http_response_code(500);
-        echo json_encode(["error" => "Error al asignar"]);
+    try {
+        $result = assignCourseToStudent($conn, $input['student_id'], $input['course_id'], $input['passed']);
+        if ($result['inserted'] > 0) {
+            echo json_encode(["message" => "Asignación realizada"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "Error al asignar"]);
+        }
+    } catch (exception $e) {
+        http_response_code(409);
+        echo json_encode([  "error" => "No se pudo crear",
+                            "errno" => $e->getCode() ]);
     }
 }
 
@@ -28,12 +34,18 @@ function handlePut($conn) { // PUT
         return;
     }
 
-    $result = updateStudentCourse($conn, $input['id'], $input['student_id'], $input['course_id'], $input['passed']);
-    if ($result['updated'] > 0) {
-        echo json_encode(["message" => "Actualización correcta"]);
-    } else {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo actualizar"]);
+    try {
+        $result = updateStudentCourse($conn, $input['id'], $input['student_id'], $input['course_id'], $input['passed']);
+        if ($result['updated'] > 0) {
+            echo json_encode(["message" => "Actualización correcta"]);
+        } else {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo actualizar"]);
+        }
+    } catch (exception $e) {
+        http_response_code(409);
+        echo json_encode([  "error" => "No se pudo crear",
+                            "errno" => $e->getCode() ]);
     }
 }
 

@@ -52,7 +52,18 @@ function setupFormHandler() {
             clearForm();
             loadRelations();
         } catch (err) {
-            console.error('Error guardando relación:', err.message);
+            let alertmsg;
+
+            switch (err.message) {
+                case "1062":
+                    alertmsg = "Ya existe esa relación";
+                    break;
+                default:
+                    alertmsg = "Error en " + (relation.id ? "UPDATE" : "CREATE");
+            }
+            
+            console.error('Error guardando relación:', alertmsg.toLowerCase());
+            addAlert(alertmsg);
         }
     });
 }
@@ -95,6 +106,7 @@ async function loadRelations() {
 function renderRelationsTable(relations) {
     const tbody = document.getElementById('relationTableBody');
     tbody.replaceChildren();
+    emptyAlert();
 
     relations.forEach(rel => {
         const tr = document.createElement('tr');
@@ -146,4 +158,18 @@ async function confirmDelete(id) {
     } catch (err) {
         console.error('Error al borrar inscripción:', err.message);
     }
+}
+
+function addAlert(message) {
+    const alertbox = document.getElementById('alertbox');
+    const alert = document.createElement('p');
+    alert.textContent = message;
+    alertbox.appendChild(alert);
+
+    alert.addEventListener('click', () => alert.remove());
+}
+
+function emptyAlert() {
+    const alertbox = document.getElementById('alertbox');
+    alertbox.replaceChildren();
 }

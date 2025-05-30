@@ -28,7 +28,18 @@ function setupCourseFormHandler() {
             document.getElementById('courseId').value = '';
             loadCourses();
         } catch (err) {
-            console.error(err.message);
+            let alertmsg;
+
+            switch (err.message) {
+                case "1062":
+                    alertmsg = "Ya existe una materia con ese nombre";
+                    break;
+                default:
+                    alertmsg = "Error en " + (course.id ? "UPDATE" : "CREATE");
+            }
+            
+            console.error('Error al agregar materia:', alertmsg.toLowerCase());
+            addAlert(alertmsg);
         }
   });
 }
