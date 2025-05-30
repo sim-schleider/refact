@@ -60,7 +60,7 @@ function setupFormHandler() {
 function setupCancelHandler() {
     const cancelBtn = document.getElementById('cancelBtn');
     cancelBtn.addEventListener('click', () => {
-        document.getElementById('studentId').value = '';
+        document.getElementById('relationId').value = '';
     });
 }
 
