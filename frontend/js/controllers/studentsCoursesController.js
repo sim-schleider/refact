@@ -9,6 +9,7 @@ import { studentsCoursesAPI } from '../api/studentsCoursesAPI.js';
 document.addEventListener('DOMContentLoaded', () => {
     initSelects();
     setupFormHandler();
+    setupCancelHandler();
     loadRelations();
 });
 
@@ -53,6 +54,13 @@ function setupFormHandler() {
         } catch (err) {
             console.error('Error guardando relación:', err.message);
         }
+    });
+}
+
+function setupCancelHandler() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => {
+        document.getElementById('studentId').value = '';
     });
 }
 

@@ -5,6 +5,7 @@ import { coursesAPI } from '../api/coursesAPI.js';
 document.addEventListener('DOMContentLoaded', () => {
     loadCourses();
     setupCourseFormHandler();
+    setupCancelHandler();
 });
 
 function setupCourseFormHandler() {
@@ -30,6 +31,13 @@ function setupCourseFormHandler() {
             console.error(err.message);
         }
   });
+}
+
+function setupCancelHandler() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => {
+        document.getElementById('studentId').value = '';
+    });
 }
 
 async function loadCourses() {

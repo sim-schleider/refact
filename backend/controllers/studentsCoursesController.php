@@ -4,17 +4,14 @@
 require_once("./models/studentsCourses.php");
 
 function handleGet($conn) { // GET
-    $result = getAllCoursesStudents($conn);
-    $data = [];
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-    echo json_encode($data);
+    $studentsCourses = getAllCoursesStudents($conn);
+    echo json_encode($studentsCourses);
 }
 
 function handlePost($conn) { // POST
     $input = json_decode(file_get_contents("php://input"), true);
-    if (assignCourseToStudent($conn, $input['student_id'], $input['course_id'], $input['passed'])) {
+    $result = assignCourseToStudent($conn, $input['student_id'], $input['course_id'], $input['passed']);
+    if ($result['inserted'] > 0) {
         echo json_encode(["message" => "Asignación realizada"]);
     } else {
         http_response_code(500);
@@ -31,7 +28,8 @@ function handlePut($conn) { // PUT
         return;
     }
 
-    if (updateStudentCourse($conn, $input['id'], $input['student_id'], $input['course_id'], $input['passed'])) {
+    $result = updateStudentCourse($conn, $input['id'], $input['student_id'], $input['course_id'], $input['passed']);
+    if ($result['updated'] > 0) {
         echo json_encode(["message" => "Actualización correcta"]);
     } else {
         http_response_code(500);
@@ -41,7 +39,8 @@ function handlePut($conn) { // PUT
 
 function handleDelete($conn) { // DELETE
     $input = json_decode(file_get_contents("php://input"), true);
-    if (removeStudentCourse($conn, $input['id'])) {
+    $result = removeStudentCourse($conn, $input['id']);
+    if ($result['deleted'] > 0) {
         echo json_encode(["message" => "Relación eliminada"]);
     } else {
         http_response_code(500);

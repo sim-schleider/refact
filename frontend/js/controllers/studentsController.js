@@ -5,6 +5,7 @@ import { studentsAPI } from '../api/studentsAPI.js'; // importa la API de estudi
 document.addEventListener('DOMContentLoaded', () => { // espera a que termine de cargar el DOM
     loadStudents(); // carga la tabla
     setupFormHandler(); // procesa el formulario
+    setupCancelHandler(); // procesa el reset del formulario
 });
   
 function setupFormHandler() {
@@ -26,7 +27,14 @@ function setupFormHandler() {
         }
     });
 }
-  
+
+function setupCancelHandler() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => { // ejecuta una función al recibir un click
+        document.getElementById('studentId').value = ''; // vacía la id (oculta) del estudiante
+    });
+}
+
 function getFormData() {
     return {
         // obtiene los valores del formulario - 'trim()' elimina los espacios en blanco al principio y al final
