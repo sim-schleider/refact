@@ -49,7 +49,7 @@ function handleDelete($conn) { // DELETE - elimina valores
             echo json_encode(["error" => "No se pudo eliminar"]);
         }
     } catch (exception $e) { // detecta errores enviados por el sistema de base de datos
-        http_response_code(409); // error 409 - error con el estado actual del recurso
+        http_response_code(500); // (*) esto podría ser un error 409 (error con el estado actual del recurso)
         echo json_encode([  "error" => "No se pudo eliminar",
                             "errno" => $e->getCode() ]); // obtiene el código del error de MySQL
     }

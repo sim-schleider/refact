@@ -15,11 +15,11 @@ function handlePost($conn) { // POST
         if ($result['inserted'] > 0) {
             echo json_encode(["message" => "Asignación realizada"]);
         } else {
-            http_response_code(500);
+            http_response_code(404);
             echo json_encode(["error" => "Error al asignar"]);
         }
     } catch (exception $e) {
-        http_response_code(409);
+        http_response_code(500);
         echo json_encode([  "error" => "Error al asignar",
                             "errno" => $e->getCode() ]);
     }
@@ -41,11 +41,11 @@ function handlePut($conn) { // PUT
         } else if (relationExists($conn, $input['id'])) {
             echo json_encode(["message" => "Relación sin cambios"]);
         } else {
-            http_response_code(500);
+            http_response_code(404);
             echo json_encode(["error" => "No se pudo actualizar"]);
         }
     } catch (exception $e) {
-        http_response_code(409);
+        http_response_code(500);
         echo json_encode([  "error" => "No se pudo actualizar",
                             "errno" => $e->getCode() ]);
     }
