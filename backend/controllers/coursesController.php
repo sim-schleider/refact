@@ -37,7 +37,9 @@ function handlePut($conn) { // PUT
         $result = updateCourse($conn, $input['id'], $input['name']);
         if ($result['updated'] > 0) {
             echo json_encode(["message" => "Materia actualizada correctamente"]);
-        } else { // (!) si la información al actualizar se mantiene igual, se envía como error
+        } else if (courseExists($conn, $input['id'])) {
+            echo json_encode(["message" => "Materia sin cambios"]);
+        } else {
             http_response_code(500);
             echo json_encode(["error" => "No se pudo actualizar"]);
         }

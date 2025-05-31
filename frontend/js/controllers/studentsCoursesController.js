@@ -26,10 +26,10 @@ async function initSelects() {
 
         const courses = await coursesAPI.fetchAll();
         const courseSelect = document.getElementById('courseIdSelect'); // obtiene el 'select' de materias del formulario
-        courses.forEach(sub => {
+        courses.forEach(c => {
             const option = document.createElement('option');
-            option.value = sub.id;
-            option.textContent = sub.name;
+            option.value = c.id;
+            option.textContent = c.name;
             courseSelect.appendChild(option);
         });
     } catch (err) {
@@ -145,7 +145,7 @@ function createActionsCell(relation) {
 function fillForm(relation) {
     document.getElementById('relationId').value = relation.id;
     document.getElementById('studentIdSelect').value = relation.student_id;
-    document.getElementById('courseIdSelect').value = relation.course_id;
+    document.getElementById('courseIdSelect').value = relation.course_id;  // (!) cuando se edita una relación y las materias del select no terminaron de cargar, se asigna la primera opción erróneamente
     document.getElementById('passed').checked = !!relation.passed;
 }
 

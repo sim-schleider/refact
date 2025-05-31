@@ -30,6 +30,8 @@ function handlePut($conn) { // PUT - actualiza valores
     $result = updateStudent($conn, $input['id'], $input['fullname'], $input['email'], $input['age']);
     if ($result['updated'] > 0) { // actualiza un estudiante con los datos ingresados
         echo json_encode(["message" => "Actualizado correctamente"]); 
+    } else if (studentExists($conn, $input['id'])) {
+            echo json_encode(["message" => "Estudiante sin cambios"]);
     } else {
         http_response_code(500); 
         echo json_encode(["error" => "No se pudo actualizar"]);

@@ -28,10 +28,10 @@ function getAllCoursesStudents($conn) { // obtiene todas las relaciones
 }
 
 function getCoursesByStudent($conn, $student_id) { // obtiene una materia basado en el estudiante
-    $sql = "SELECT ss.course_id, s.name, ss.passed
-            FROM students_courses ss
-            JOIN courses s ON ss.course_id = s.id
-            WHERE ss.student_id = ?";
+    $sql = "SELECT sc.course_id, c.name, sc.passed
+            FROM students_courses sc
+            JOIN courses c ON sc.course_id = c.id
+            WHERE sc.student_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $student_id);
     $stmt->execute();
@@ -56,7 +56,17 @@ function removeStudentCourse($conn, $id) { // elimina la relación
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    
+
     return ['deleted' => $stmt->affected_rows];
+}
+
+function relationExists($conn, $id) {
+    $sql = "SELECT 1 FROM students_courses WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->store_result(); // (?)
+
+    return $stmt->num_rows > 0;
 }
 ?>

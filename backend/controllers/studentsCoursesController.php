@@ -20,7 +20,7 @@ function handlePost($conn) { // POST
         }
     } catch (exception $e) {
         http_response_code(409);
-        echo json_encode([  "error" => "No se pudo crear",
+        echo json_encode([  "error" => "Error al asignar",
                             "errno" => $e->getCode() ]);
     }
 }
@@ -38,13 +38,15 @@ function handlePut($conn) { // PUT
         $result = updateStudentCourse($conn, $input['id'], $input['student_id'], $input['course_id'], $input['passed']);
         if ($result['updated'] > 0) {
             echo json_encode(["message" => "Actualización correcta"]);
+        } else if (relationExists($conn, $input['id'])) {
+            echo json_encode(["message" => "Relación sin cambios"]);
         } else {
             http_response_code(500);
             echo json_encode(["error" => "No se pudo actualizar"]);
         }
     } catch (exception $e) {
         http_response_code(409);
-        echo json_encode([  "error" => "No se pudo crear",
+        echo json_encode([  "error" => "No se pudo actualizar",
                             "errno" => $e->getCode() ]);
     }
 }

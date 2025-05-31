@@ -43,7 +43,17 @@ function deleteCourse($conn, $id) { // elimina una materia
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    
+
     return ['deleted' => $stmt->affected_rows];
+}
+
+function courseExists($conn, $id) {
+    $sql = "SELECT 1 FROM courses WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->store_result();
+    
+    return $stmt->num_rows > 0;
 }
 ?>

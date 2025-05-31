@@ -42,7 +42,17 @@ function deleteStudent($conn, $id) { // elimina un estudiante
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    
+
     return ['deleted' => $stmt->affected_rows];
+}
+
+function studentExists($conn, $id) {
+    $sql = "SELECT 1 FROM students WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->store_result();
+    
+    return $stmt->num_rows > 0;
 }
 ?>
