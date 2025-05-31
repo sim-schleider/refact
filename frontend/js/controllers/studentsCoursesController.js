@@ -5,9 +5,10 @@ import { studentsAPI } from '../api/studentsAPI.js';
 import { coursesAPI } from '../api/coursesAPI.js';
 import { studentsCoursesAPI } from '../api/studentsCoursesAPI.js';
 
+let selectsReady = false; // previene que se pueda editar una relación sin que hayan cargado todas las opciones 
 
 document.addEventListener('DOMContentLoaded', () => {
-    initSelects();
+    initSelects(); // la opción alternativa al problema de 'selectsReady' es aprovechar la asincronicidad de esta función, pero esto demora la carga de la tabla, lo cual puede no ser necesario
     setupFormHandler();
     setupCancelHandler();
     loadRelations();
@@ -32,6 +33,8 @@ async function initSelects() {
             option.textContent = c.name;
             courseSelect.appendChild(option);
         });
+
+        selectsReady = true; // una vez que todas las opciones de los select hayan cargado, permite la edición de relaciones
     } catch (err) {
         console.error('Error cargando estudiantes o materias:', err.message);
     }
@@ -131,7 +134,10 @@ function createActionsCell(relation) {
 
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Editar';
-    editBtn.addEventListener('click', () => fillForm(relation));
+    editBtn.addEventListener('click', () => {
+        if (selectsReady) // revisa que solo llene el formulario si las opciones están disponibles
+            fillForm(relation);
+    });
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Borrar';
