@@ -5,6 +5,7 @@ import { studentsAPI } from '../api/studentsAPI.js'; // importa la API de estudi
 document.addEventListener('DOMContentLoaded', () => { // espera a que termine de cargar el DOM
     loadStudents(); // carga la tabla
     setupFormHandler(); // procesa el formulario
+    setupCancelHandler(); // procesa el reset del formulario
 });
   
 function setupFormHandler() {
@@ -14,7 +15,7 @@ function setupFormHandler() {
         const student = getFormData(); // obtiene los datos
     
         try {
-            if (student.id) { // (?)
+            if (student.id) { // si la id está vacía - la id solo va a tener valor si se edita un estudiante
                 await studentsAPI.update(student); // actualiza un estudiante
             } else {
                 await studentsAPI.create(student); // crea un nuevo estudiante
@@ -26,7 +27,14 @@ function setupFormHandler() {
         }
     });
 }
-  
+
+function setupCancelHandler() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => { // ejecuta una función al recibir un click
+        document.getElementById('studentId').value = ''; // vacía la id (oculta) del estudiante
+    });
+}
+
 function getFormData() {
     return {
         // obtiene los valores del formulario - 'trim()' elimina los espacios en blanco al principio y al final
@@ -54,6 +62,7 @@ async function loadStudents() {
 function renderStudentTable(students) { // genera la tabla
     const tbody = document.getElementById('studentTableBody'); // obtiene el cuerpo de la tabla
     tbody.replaceChildren(); // vacía la tabla
+    emptyAlert();
   
     students.forEach(student => { // ejecuta una función anónima por cada elemento (student) del array students
         const tr = document.createElement('tr'); // crea una fila
@@ -107,7 +116,32 @@ async function confirmDelete(id) { // confirma la eliminación de fila
         await studentsAPI.remove(id); // invoca el método DELETE interno de la API
         loadStudents(); // recarga la tabla
     } catch (err) {
-        console.error('Error al borrar:', err.message);
+        let alertmsg;
+
+        switch (err.message) {
+            case "1451": // caso 1451 - violación de restricción de clave foránea
+                alertmsg = "El estudiante no puede ser eliminado porque está inscrito en una materia";
+                break;
+            default: // caso general
+                alertmsg = "Error en DELETE"; // (*) ¿hay forma de pasar el método como variable?
+        }
+
+        console.error('Error al borrar estudiante:', alertmsg.toLowerCase());
+        addAlert(alertmsg);
     }
 }
-  
+
+function addAlert(message) {
+    const alertbox = document.getElementById('alertbox');
+    const alert = document.createElement('p');
+    alert.textContent = message;
+    alertbox.appendChild(alert);
+    
+    alert.addEventListener('click', () => alert.remove()); // al ser presionado, elimina la alerta
+}
+
+function emptyAlert() {
+    const alertbox = document.getElementById('alertbox');
+    alertbox.replaceChildren();
+}
+// (?) ¿cómo pueden modularizarse las alertas?

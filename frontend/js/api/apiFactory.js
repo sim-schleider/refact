@@ -10,8 +10,10 @@ export function createAPI(moduleName, config = {}) { // exporta una función - '
             body: JSON.stringify(data) // indica los datos a ser enviados
         });
 
-        if (!res.ok) throw new Error(`Error en ${method}`); // si el 'fetch' no fue exitoso, lanza un error - si el error no es recibido con 'catch', el programa termina
-        return await res.json(); // de lo contrario, devuelve lo obtenido - lo que se recibe es un objeto parseado a JavaScript, no JSON puro
+        const resobj =  await res.json(); // obtiene un JSON con la respuesta - (?) ¿hay algún problema con hacerlo antes?
+        if (!res.ok) throw new Error(resobj.errno); // si ocurrió un error (res.ok == false) envía un error con el código ($e->getCode()) recibido - esto genera especificidad
+        
+        return resobj;
     }
 
     return { // devolución de la API
@@ -21,7 +23,7 @@ export function createAPI(moduleName, config = {}) { // exporta una función - '
             return await res.json();
         }, 
         async create(data) { // crea un elemento
-            return await sendJSON('POST', data); // (?) de dónde sale 'data'?
+            return await sendJSON('POST', data); // (?) ¿de dónde sale 'data'?
         }, 
         async update(data) { // actualiza un elemento
             return await sendJSON('PUT', data);
@@ -29,5 +31,5 @@ export function createAPI(moduleName, config = {}) { // exporta una función - '
         async remove(id) { // elimina un elemento
             return await sendJSON('DELETE', { id });
         }
-    };
+    }
 }

@@ -97,7 +97,7 @@ form .in input, form .in select {
     color: var(--c3);
 }
 
-form .in input:focus, form .in select:focus  {
+form .in input:focus, form .in select:focus {
     color: var(--c1);
     background-color: var(--c3);
     outline: none;
@@ -237,7 +237,7 @@ footer a {
     
     margin-top: 1.5rem;
     width: 50%;
-
+    
     color: var(--c3);
     background-color: var(--c1);
     background-image: none;
@@ -247,6 +247,22 @@ footer a:hover {
     color: var(--c1);
     background-color: var(--c2);
     background-image: none;
+}
+
+/* Alert */
+.alert > p {
+    width: 100%;
+
+    padding: 1rem 1.5rem;
+    box-sizing: border-box;
+
+    color: #fff;
+    background-color: #f45;
+    margin: 0;
+}
+
+.alert > p.soft {
+    background-color: #fa5;
 }
 
 /* Portrait */

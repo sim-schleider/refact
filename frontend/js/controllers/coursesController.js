@@ -5,6 +5,7 @@ import { coursesAPI } from '../api/coursesAPI.js';
 document.addEventListener('DOMContentLoaded', () => {
     loadCourses();
     setupCourseFormHandler();
+    setupCancelHandler();
 });
 
 function setupCourseFormHandler() {
@@ -27,9 +28,27 @@ function setupCourseFormHandler() {
             document.getElementById('courseId').value = '';
             loadCourses();
         } catch (err) {
-            console.error(err.message);
+            let alertmsg;
+
+            switch (err.message) {
+                case "1062":
+                    alertmsg = "Ya existe una materia con ese nombre";
+                    break;
+                default:
+                    alertmsg = "Error en " + (course.id ? "UPDATE" : "CREATE");
+            }
+            
+            console.error('Error al agregar materia:', alertmsg.toLowerCase());
+            addAlert(alertmsg);
         }
   });
+}
+
+function setupCancelHandler() {
+    const cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.addEventListener('click', () => {
+        document.getElementById('courseId').value = '';
+    });
 }
 
 async function loadCourses() {
@@ -44,6 +63,7 @@ async function loadCourses() {
 function renderCourseTable(courses) {
     const tbody = document.getElementById('courseTableBody');
     tbody.replaceChildren();
+    emptyAlert();
 
     courses.forEach(course => {
         const tr = document.createElement('tr');
@@ -84,9 +104,34 @@ async function confirmDeleteCourse(id) {
     if (!confirm('¿Seguro que deseas borrar esta materia?')) return;
 
     try {
-        await coursesAPI.remove(id);
-        loadCourses();
+        await coursesAPI.remove(id); // invoca el método DELETE interno de la API
+        loadCourses(); // recarga la tabla
     } catch (err) {
-        console.error('Error al borrar materia:', err.message);
+        let alertmsg;
+
+        switch (err.message) {
+            case "1451":
+                alertmsg = "La materia no puede ser eliminada porque tiene estudiantes inscritos";
+                break;
+            default:
+                alertmsg = "Error en DELETE";
+        }
+
+        console.error('Error al borrar estudiante:', alertmsg.toLowerCase());
+        addAlert(alertmsg);
     }
+}
+
+function addAlert(message) {
+    const alertbox = document.getElementById('alertbox');
+    const alert = document.createElement('p');
+    alert.textContent = message;
+    alertbox.appendChild(alert);
+
+    alert.addEventListener('click', () => alert.remove());
+}
+
+function emptyAlert() {
+    const alertbox = document.getElementById('alertbox');
+    alertbox.replaceChildren();
 }
