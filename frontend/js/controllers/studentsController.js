@@ -23,7 +23,15 @@ function setupFormHandler() {
             clearForm(); // vacía el formulario
             loadStudents(); // recarga la tabla
         } catch (err) { // si se lanza un error desde la API (throw)
-            console.error(err.message); // muestra el mensaje del error
+            let alertmsg = ''; // inicializa el mensaje 
+
+            switch (err.message) { // contempla los distintos errores - en este caso no hay definido ningún error específico
+                default:
+                    alertmsg = 'Error en ' + (student.id ? 'UPDATE' : 'CREATE'); // (*) ¿hay forma de pasar el método como variable?
+            }
+            
+            console.error('Error guardando estudiante:', alertmsg.toLowerCase()); // muestra el mensaje del error
+            addAlert(alertmsg);
         }
     });
 }
@@ -110,20 +118,20 @@ function fillForm(student) { // rellena el formulario con la fila
 }
   
 async function confirmDelete(id) { // confirma la eliminación de fila
-    if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return; // muestra un mensaje en pantalla - si no se confirma, no prosigue con la eliminación - (*)
+    if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return; // muestra un mensaje en pantalla - si no se confirma, no prosigue con la eliminación
   
     try {
         await studentsAPI.remove(id); // invoca el método DELETE interno de la API
         loadStudents(); // recarga la tabla
     } catch (err) {
-        let alertmsg;
+        let alertmsg = '';
 
         switch (err.message) {
-            case "1451": // caso 1451 - violación de restricción de clave foránea
-                alertmsg = "El estudiante no puede ser eliminado porque está inscrito en una materia";
+            case '1451': // caso 1451 - violación de restricción de clave foránea
+                alertmsg = 'El estudiante no puede ser eliminado porque está inscrito en una materia';
                 break;
             default: // caso general
-                alertmsg = "Error en DELETE"; // (*) ¿hay forma de pasar el método como variable?
+                alertmsg = 'Error en DELETE';
         }
 
         console.error('Error al borrar estudiante:', alertmsg.toLowerCase());
