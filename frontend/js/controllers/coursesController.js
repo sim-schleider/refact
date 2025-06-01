@@ -9,8 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupCourseFormHandler() {
-  const form = document.getElementById('courseForm');
-  form.addEventListener('submit', async e => {
+    const form = document.getElementById('courseForm');
+    form.addEventListener('submit', async e => {
         e.preventDefault();
         const course = {
             id: document.getElementById('courseId').value.trim(),
@@ -28,17 +28,17 @@ function setupCourseFormHandler() {
             document.getElementById('courseId').value = '';
             loadCourses();
         } catch (err) {
-            let alertmsg;
+            let alertmsg = '';
 
             switch (err.message) {
-                case "1062":
-                    alertmsg = "Ya existe una materia con ese nombre";
+                case '1062': // caso 1062 - entrada duplicada
+                    alertmsg = 'Ya existe una materia con ese nombre';
                     break;
                 default:
-                    alertmsg = "Error en " + (course.id ? "UPDATE" : "CREATE");
+                    alertmsg = 'Error en ' + (course.id ? 'UPDATE' : 'CREATE');
             }
             
-            console.error('Error al agregar materia:', alertmsg.toLowerCase());
+            console.error('Error guardando materia:', alertmsg.toLowerCase());
             addAlert(alertmsg);
         }
   });
@@ -107,17 +107,17 @@ async function confirmDeleteCourse(id) {
         await coursesAPI.remove(id); // invoca el método DELETE interno de la API
         loadCourses(); // recarga la tabla
     } catch (err) {
-        let alertmsg;
+        let alertmsg = '';
 
         switch (err.message) {
-            case "1451":
-                alertmsg = "La materia no puede ser eliminada porque tiene estudiantes inscritos";
+            case '1451':
+                alertmsg = 'La materia no puede ser eliminada porque tiene estudiantes inscritos';
                 break;
             default:
-                alertmsg = "Error en DELETE";
+                alertmsg = 'Error en DELETE';
         }
 
-        console.error('Error al borrar estudiante:', alertmsg.toLowerCase());
+        console.error('Error al borrar materia:', alertmsg.toLowerCase());
         addAlert(alertmsg);
     }
 }

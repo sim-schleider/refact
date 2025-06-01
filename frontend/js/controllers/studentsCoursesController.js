@@ -5,7 +5,7 @@ import { studentsAPI } from '../api/studentsAPI.js';
 import { coursesAPI } from '../api/coursesAPI.js';
 import { studentsCoursesAPI } from '../api/studentsCoursesAPI.js';
 
-let selectsReady = false; // previene que se pueda editar una relación sin que hayan cargado todas las opciones 
+let selectsReady = false; // previene que se pueda editar una inscripción sin que hayan cargado todas las opciones 
 
 document.addEventListener('DOMContentLoaded', () => {
     initSelects(); // la opción alternativa al problema de 'selectsReady' es aprovechar la asincronicidad de esta función, pero esto demora la carga de la tabla, lo cual puede no ser necesario
@@ -34,7 +34,7 @@ async function initSelects() {
             courseSelect.appendChild(option);
         });
 
-        selectsReady = true; // una vez que todas las opciones de los select hayan cargado, permite la edición de relaciones
+        selectsReady = true; // una vez que todas las opciones de los select hayan cargado, permite la edición de inscripciones
     } catch (err) {
         console.error('Error cargando estudiantes o materias:', err.message);
     }
@@ -55,17 +55,17 @@ function setupFormHandler() {
             clearForm();
             loadRelations();
         } catch (err) {
-            let alertmsg;
+            let alertmsg = '';
 
             switch (err.message) {
-                case "1062":
-                    alertmsg = "Ya existe esa relación";
+                case '1062':
+                    alertmsg = 'El estudiante ya está inscrito en la materia';
                     break;
                 default:
-                    alertmsg = "Error en " + (relation.id ? "UPDATE" : "CREATE");
+                    alertmsg = 'Error en ' + (relation.id ? 'UPDATE' : 'CREATE');
             }
             
-            console.error('Error guardando relación:', alertmsg.toLowerCase());
+            console.error('Error guardando inscripción:', alertmsg.toLowerCase());
             addAlert(alertmsg);
         }
     });
@@ -94,7 +94,7 @@ function clearForm() {
 
 async function loadRelations() {
     try {
-        const relations = await studentsCoursesAPI.fetchAll(); // obtiene todas las relaciones - esto se encarga de relacionar las dos tablas correctamente en el backend
+        const relations = await studentsCoursesAPI.fetchAll(); // obtiene todas las inscripciones - esto se encarga de relacionar las dos tablas correctamente en el backend
 
         relations.forEach(rel => {
             rel.passed = Number(rel.passed); // convierte la condición de aprobación a un número - esto es necesario para que el string '0' sea considerado falso
@@ -151,7 +151,7 @@ function createActionsCell(relation) {
 function fillForm(relation) {
     document.getElementById('relationId').value = relation.id;
     document.getElementById('studentIdSelect').value = relation.student_id;
-    document.getElementById('courseIdSelect').value = relation.course_id;  // (!) cuando se edita una relación y las materias del select no terminaron de cargar, se asigna la primera opción erróneamente
+    document.getElementById('courseIdSelect').value = relation.course_id;
     document.getElementById('passed').checked = !!relation.passed;
 }
 
@@ -162,7 +162,15 @@ async function confirmDelete(id) {
         await studentsCoursesAPI.remove(id);
         loadRelations();
     } catch (err) {
-        console.error('Error al borrar inscripción:', err.message);
+        let alertmsg;
+
+        switch (err.message) {
+            default:
+                alertmsg = 'Error en DELETE';
+        }
+
+        console.error('Error al borrar inscripción:', alertmsg.toLowerCase());
+        addAlert(alertmsg);
     }
 }
 
